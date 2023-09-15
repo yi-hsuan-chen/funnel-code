@@ -4,7 +4,7 @@ function polysyms = taylorApproxSyms(fh,gh,order)
 % Input:
 %   fh     -- drift term, expressed symbolically wrt x.
 %   gh     -- control vector fields, expressed symbolically wrt x.
-%   order -- specify truncation order.
+%   order  -- specify truncation order.
 % Output:
 %   polysyms  -- the function handle of @(t,x,u) polynomial dynamics.
 % Edited by Yi-Hsuan Chen 08/25/2023

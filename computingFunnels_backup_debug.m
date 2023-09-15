@@ -80,10 +80,7 @@ V               = Vtraj0.V0;
 rhopp           = rho0pp;
 k               = 1;
 
-[L1,Le,Sks]     = findLs(V,rhopp,tGrid,f_polysym,options,ui,intvs,t,x,k);
-
-
-function checkTVLQRctrlperf(fcl,tspan,X_nom)
+[L1,Le,Sks]     = findLs(V,rhopp,tGrid,f_polysym,options,ui,intvs,t,x,k);function checkTVLQRctrlperf(fcl,tspan,X_nom)
 % Note: Check control performance of TVLQR for nonlinear sys
 x0          = [0;0;0];
 [~,x_n]     = ode45(fcl,tspan,x0);

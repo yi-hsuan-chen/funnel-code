@@ -60,8 +60,6 @@ K           = @(t) -R(t)\B(t)'*S(t);
 fcl         = @(t,x) fh(x) + gh(x)*(u0(t)+K(t)*(x-x0(t)));
 checkTVLQRctrlperf(fcl,tspan,X_nom);
 order       = 3;
-% fcl_poly    = taylorExpansion(state,f,g,K,x0,order);
-% [~,x_app]   = ode45(fcl_poly,tspan,[0;0;0]);
 f_polysym   = taylorApproxSyms(fh,gh,order);
 [~,x_app]   = ode45(@(t,x) f_polysym(t,x,u0(t)+K(t)*(x-x0(t))),tspan,[0;0;0]);
 plot(x_app(:,1),x_app(:,2),'k:','LineWidth',3);

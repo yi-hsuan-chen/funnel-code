@@ -1,5 +1,6 @@
 function XDOT = dubins_model(X,U,paras)
-
+% 'open-loop' Dubin's Car model
+% USED in 'trajGenerator.m'
 % [XDOT] = dubins_model(X,U) returns the state derivatives, XDOT,
 % given the current state and inputs, X and U.
 %
