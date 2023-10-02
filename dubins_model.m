@@ -23,5 +23,5 @@ u       = U(1,:);           % steering rate
 v       = paras.v;          % velocity 
 
 %========================= STATE DERIVATIVES =========================   
-XDOT    = [v*sin(theta); v*cos(theta); u];
+XDOT    = [-v*sin(theta); v*cos(theta); u];
 end

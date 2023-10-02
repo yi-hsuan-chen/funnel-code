@@ -82,7 +82,7 @@ time_step_number        = problem.options.trapezoid.nGrid/time_step_Rel;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 finishPoints(1,:) = -2:1:2;
-finishPoints(2,:) = repmat(10,1,5);
+finishPoints(2,:) = repmat(3,1,5);
 
 figure(1); clf; hold on;
 

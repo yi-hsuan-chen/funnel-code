@@ -17,7 +17,7 @@ v       = paras.v;          % velocity
 %========================= DYNAMICS (ctrlAffine) =========================   
 syms p_x p_y theta
 x           = [p_x;p_y;theta];
-symbolic_f  = [v*sin(theta); v*cos(theta); 0];
+symbolic_f  = [-v*sin(theta); v*cos(theta); 0];
 symbolic_g  = [0; 0; 1];
 
 %========================= function handles =========================   

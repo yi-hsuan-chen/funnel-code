@@ -1,4 +1,4 @@
-function [Vtraj0,rho0pp,Phi,ui,intvs,t,x,options] = InitializeOptim(ts,x0,u0,K,S0)
+function [Vtraj0,rho0pp,ui,intvs,t,x,options] = InitializeOptim(ts,x0,u0,K,S0)
 % 
 % Input:
 %   ts      -- time samples
@@ -22,12 +22,14 @@ options.max_iterations  = 10;
 options.converge_tol    = 1e-3;
 options.clean_tol       = 1e-6;
 options.degL1           = 2;
+options.degL0           = 4;
 options.degLe           = 2;
 options.xdim            = length(x0(1));
 options.rho0            = 0.1*ones(length(ts),1);
 options.degV            = 4;
+options.gX0             = [4 0 0; 0 4 0; 0 0 8];
 
-%%============================ Initialize rho ============================
+%%============================ Initialize rho =============================
 c           = 3;
 rhot        = exp(c*(ts-max(ts))/(max(ts)-min(ts)));
 rho0pp      = interp1(ts,rhot,'linear','pp');
@@ -42,25 +44,26 @@ Spp         = interp1(ts,reshape(permute(S0(ts),[3 1 2]),N,options.xdim*options.
 S0i         = pp2msspoly(t,Spp);
 % rhoi        = pp2msspoly(t,rhopp);
 
-%===================== compute (V0,V0dot,rho,rhodot) =====================
+%===================== compute (V0,V0dot,rho,rhodot) ======================
 intervals   = cell(1,N-1);
 V0          = cell(1,N-1);
 V0dot       = cell(1,N-1);
 S0s         = cell(1,N-1);
 % rho0         = cell(1,N-1);
 % rhodot      = cell(1,N-1);
-Phi         = cell(1,N-1);
+% Phi         = cell(1,N-1);
 ui          = cell(1,N-1);
 % rho         = ppval(rhopp,ts);
 
 for i = 1:N-1  
     intervals{i}    = [ts(i) ts(i+1)]-ts(i);
-    Phi{i}          = zeros(length(x),length(x));   % initialize Phi
-    S0s{i}          = reshape(S0i(:,i),options.xdim,options.xdim)+Phi{i};
+%     Phi{i}          = zeros(length(x),length(x));   % initialize Phi
+    S0s{i}          = reshape(S0i(:,i),options.xdim,options.xdim);
     xbari           = x-x0i(:,i);
     ui{i}           = u0i(:,i)+K(ts(i))*xbari;
     % Use matrix 'S' for initial Lyapunov guess
-    V0{i}           = xbari'*S0s{i}*xbari + x'*Phi{i}*x;
+%     V0{i}           = xbari'*S0s{i}*xbari + x'*Phi{i}*x;
+    V0{i}           = xbari'*S0s{i}*xbari;
     V0dot{i}        = diff(V0{i},t);
 %     rho0{i}         = rhoi(:,i);
 end
