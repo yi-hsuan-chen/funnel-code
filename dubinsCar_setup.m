@@ -9,7 +9,7 @@ paras.v     = 1;    % constant speed
 paras.r     = 4;    % truncation order for Taylor expansion
 dubins      = DubinsCar(paras);
 dynamics    = @dubins.dynamics;
-polydyn     = @dubins.polynomialdyn;
+polydyn     = @dubins.polydyn;
 linearize   = @dubins.linearize;
 
 for i = 1:1
@@ -60,7 +60,7 @@ end
 for i = 1:length(Sks)
     %     det(Sks{i})
     C   = [xGrid{1}(i+1) yGrid{1}(i+1) thGrid{1}(i+1)];
-    plotEllipse(Sks{i}./ppval(rho0pp,TGrid(i)),C); hold on;
+    plotEllipse(Sks{i},C); hold on;
 end
 
 

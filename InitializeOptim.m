@@ -24,9 +24,9 @@ options.clean_tol       = 1e-6;
 options.degL1           = 2;
 options.degL0           = 4;
 options.degLe           = 2;
+options.degV            = 4;
 options.xdim            = length(x0(1));
 options.rho0            = 0.1*ones(length(ts),1);
-options.degV            = 4;
 options.gX0             = [4 0 0; 0 4 0; 0 0 8];
 
 %%============================ Initialize rho =============================

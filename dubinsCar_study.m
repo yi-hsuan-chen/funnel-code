@@ -7,16 +7,17 @@ load_trajectory_lib; close;
 % 0) Set up system dynamics
 paras.v     = 1;    % constant speed
 paras.r     = 5;    % truncation order for Taylor expansion
+
 dubins      = DubinsCar(paras);
 dynamics    = @dubins.dynamics;
-polydyn     = @dubins.polynomialdyn;
+polydyn     = @dubins.polydyn;
 linearize   = @dubins.linearize;
-
-nSim        = 5;
+taylorExpandCL = @dubins.taylorExpandCL;
+nSim        = 10;
 stepSize    = 5e-2;                                                    
 testPerturbation = 0.1;  % Initial position error amplitude
 
-for i = 1:1
+for i = 1:5
     % 1) Fit (xo,uo) to piecewise polynomials
     X_nom       = [x_nom{i} y_nom{i} th_nom{i}];
     T_nom       = t_nom{i};
@@ -48,29 +49,35 @@ for i = 1:1
     S           = @(t) ppval(spline(ts,Ss),t);
     K           = @(t) -R(t)\B(t)'*S(t);
     
+    %%... system dynamics
+    xbar    = @(t,x) x-x0(t);
+    ubar    = @(t,x) K(t)*xbar(t,x);
+    u       = @(t,x) u0(t)+ubar(t,x);
+    xdot    = @(t,x) dynamics(t,x,u(t,x));
+%     xpdot   = @(t,x) polydyn(t,x,u(t,x));
+    x0dot   = @(t,x) dynamics(t,x0(t),u0(t));
+%     xbardot = @(t,x) dynamics(t,x0(t)+x,u0(t)+K(t)*x)-dynamics(t,x0(t),u0(t));
+    xbardot = @(t,x) polydyn(t,x0(t)+x,u0(t)+K(t)*x)-polydyn(t,x0(t),u0(t));
+%     xbardot = @(t,x) taylorExpandCL(t,x,x0,u0,K);
+
     for i = 1:nSim
         X0      = testPerturbation*randn(3,1);
-        xbar    = @(t,x) x-x0(t);
-        ubar    = @(t,x) K(t)*xbar(t,x);
-        u       = @(t,x) u0(t)+ubar(t,x);
-        xdot    = @(t,x) polydyn(t,x,u(t,x));
-        x0dot   = @(t,x) polydyn(t,x0(t),u0(t));
-        xbardot = @(t,x) polydyn(t,x0(t)+x,u0(t)+K(t)*x)-polydyn(t,x0(t),u0(t));
+        
         [t,X]   = rk4(xdot,tspan,X0,stepSize);
+%         [t,Xp]  = rk4(xpdot,tspan,X0,stepSize);
         [~,Xnom]= rk4(x0dot,tspan,[0;0;0],stepSize);
         [~,Xbar]= rk4(xbardot,tspan,X0,stepSize);
-%         [~,Xapp]= rk4(@(t,x) A(t)*x+B(t)*K(t)*x,tspan,X0,5e-2);
+%         [~,Xbar]= rk4(@(t,x) A(t)*x+B(t)*K(t)*x,tspan,X0,5e-2);
 %         plot(Xapp(:,1),Xapp(:,2),'r--','LineWidth',3);
         plot(X(:,1),X(:,2),'b-','LineWidth',3);
+%         plot(Xp(:,1),Xp(:,2),'c:','LineWidth',3);
         plot(Xnom(:,1),Xnom(:,2),'c:','LineWidth',3);
         plot(Xbar(:,1)+Xnom(:,1),Xbar(:,2)+Xnom(:,2),'r--','LineWidth',3);
+%         plot(X(:,1)-Xnom(:,1),X(:,2)-Xnom(:,2),'LineWidth',3); hold on;
 %         plot(Xbar(:,1),Xbar(:,2),'LineWidth',3); hold on;
     end
-%     c           = 2;
-%     rhot        = exp(c*(T_nom-max(T_nom))/(max(T_nom)-min(T_nom)));
-%     rho0pp      = interp1(T_nom,rhot,'linear','pp');
-%     for j = 1:5:length(T_nom)
-%         C   = X_nom(j,:);
-%         plotEllipse(S(T_nom(j))./ppval(rho0pp,T_nom(j)),C); hold on;
-%     end
+    set(gca().XLabel,'Interpreter','latex');
+    set(gca().YLabel,'Interpreter','latex');
+    set(gca,'TickLabelInterpreter','latex');
+    set(gca,'FontSize',14);
 end

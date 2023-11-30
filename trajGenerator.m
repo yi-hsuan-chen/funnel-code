@@ -74,7 +74,7 @@ problem.guess.control   = [0,0];
 
 problem.options.nlpOpt  = optimset('display','iter','MaxFunEval',1e5,'tolFun',1e-6);
 problem.options.method  = 'trapezoid';
-problem.options.trapezoid.nGrid = 15;
+problem.options.trapezoid.nGrid = 20;
 time_step_Rel           = 1e-1;
 time_step_number        = problem.options.trapezoid.nGrid/time_step_Rel;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -82,7 +82,7 @@ time_step_number        = problem.options.trapezoid.nGrid/time_step_Rel;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 finishPoints(1,:) = -2:1:2;
-finishPoints(2,:) = repmat(3,1,5);
+finishPoints(2,:) = repmat(2,1,5);
 
 figure(1); clf; hold on;
 

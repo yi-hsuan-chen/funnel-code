@@ -41,17 +41,25 @@ classdef ctrlAffineSys < handle
             dx  = obj.f(x) +  obj.g(x)*u;
         end
 
-        function dx = polynomialdyn(obj,t,x,u)
+        function dx = polydyn(obj,t,x,u)
             % Inputs:   t -- time, x -- state, u -- control
             % Outputs:  dx_poly -- polynomial dynamics as a function handle
             dx  = obj.fpoly(x,u);
         end
 
         function [A,B] = linearize(obj,x0,u0)
-            % Inputs:   x0 -- nominal state traj., u -- nominal control traj.
+            % Inputs:   x0 -- nominal state traj., u0 -- nominal control traj.
             % Outputs:  [A,B] -- system matrices as function handles
             A  = @(t) obj.A(x0(t));
             B  = @(t) obj.B(u0(t));
+        end
+
+        function xbardot = taylorExpandCL(obj,t,x,x0,u0,K) 
+            % Inputs:   x0 -- nominal state traj., u0 -- nominal control traj.
+            %           K  -- tvlqr gain matrix
+            % Outputs:  fcl_poly -- polynomial dynamics as a function handle
+%             xbardot     = obj.polydyn(t,x0(t)+x,u0(t)+K(t)*x)-obj.polydyn(t,x0(t),u0(t));
+            xbardot     = obj.fpoly(x0(t)+x,u0(t)+K(t)*x)-obj.fpoly(x0(t),u0(t));
         end
 
     end
